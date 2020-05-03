@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+gspread = "==0.2.*"
+httplib2 = "==0.17.*"
+oauth2client = "~=4.1"
+webargs = "~=5.0"
+flask = "~=1.1"
+flask-wtf = "==0.14.*"
+wtforms = "~=2.3"
+email-validator = "~=1.1"
+
+[dev-packages]
+python-dotenv = "*"
+
+[requires]
+python_version = "3.8"
