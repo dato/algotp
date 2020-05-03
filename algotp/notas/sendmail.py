@@ -5,7 +5,7 @@ import smtplib
 import os
 from email.mime.text import MIMEText
 
-import notas_oauth
+from . import notas_oauth
 
 # para configurar desde afuera
 COURSE = os.environ["NOTAS_COURSE_NAME"]
