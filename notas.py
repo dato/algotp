@@ -38,8 +38,7 @@ def verificar(padron_web, email_web):
         if not email or not padron:
             continue
 
-        if (padron.lower() == padron_web.lower() and
-            email.lower() == email_web.lower()):
+        if padron.lower() == padron_web.lower() and email.lower() == email_web.lower():
             return True
 
     return False

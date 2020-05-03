@@ -14,9 +14,14 @@ _CLIENT_SECRET = os.environ["NOTAS_OAUTH_SECRET"]
 _OAUTH_REFRESH = os.environ["NOTAS_REFRESH_TOKEN"]
 
 _creds = oauth2client.client.OAuth2Credentials(
-    "", _CLIENT_ID, _CLIENT_SECRET, _OAUTH_REFRESH,
+    "",
+    _CLIENT_ID,
+    _CLIENT_SECRET,
+    _OAUTH_REFRESH,
     datetime.datetime(2015, 1, 1),
-    "https://accounts.google.com/o/oauth2/token", "notasweb/1.0")
+    "https://accounts.google.com/o/oauth2/token",
+    "notasweb/1.0",
+)
 
 
 def get_credenciales():

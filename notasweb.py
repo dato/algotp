@@ -27,18 +27,21 @@ signer = itsdangerous.URLSafeSerializer(app.secret_key)
 class Formulario(flask_wtf.Form):
     """Pide el padrón y la dirección de correo.
     """
+
     padron = fields.StringField(
-        "Padrón", validators=[
-            validators.Regexp(r"\w+", message="Ingrese un padrón válido")])
+        "Padrón",
+        validators=[validators.Regexp(r"\w+", message="Ingrese un padrón válido")],
+    )
 
     email = html5.EmailField(
-        "E-mail", validators=[
-            validators.Email(message="Ingrese una dirección de e-mail válida")])
+        "E-mail",
+        validators=[validators.Email(message="Ingrese una dirección de e-mail válida")],
+    )
 
     submit = fields.SubmitField("Obtener enlace")
 
 
-@app.route("/", methods=('GET', 'POST'))
+@app.route("/", methods=("GET", "POST"))
 def index():
     """Sirve la página de solicitud del enlace.
     """
@@ -49,8 +52,7 @@ def index():
         email = norm_field(form.email).strip()
 
         if not notas.verificar(padron, email):
-            flask.flash(
-                "La dirección de mail no está asociada a ese padrón", "danger")
+            flask.flash("La dirección de mail no está asociada a ese padrón", "danger")
         else:
             try:
                 sendmail.sendmail(app.config.title, email, genlink(padron))
@@ -66,7 +68,7 @@ def index():
 def bad_request(err):
     """Se invoca cuando falla la validación de la clave.
     """
-    return flask.render_template( "error.html", message="Clave no válida")
+    return flask.render_template("error.html", message="Clave no válida")
 
 
 def validate(value):

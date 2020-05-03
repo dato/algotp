@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """Script para obtener el token de autorización de la aplicación.
@@ -33,16 +33,15 @@ def get_credentials(client_secrets):
     flags = tools.argparser.parse_args(args=["--noauth_local_webserver"])
     flow = flow_from_clientsecrets(
         client_secrets,
-        scope=["https://mail.google.com/",
-               "https://spreadsheets.google.com/feeds"])
+        scope=["https://mail.google.com/", "https://spreadsheets.google.com/feeds"],
+    )
 
     return tools.run_flow(flow, storage, flags)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("client_secrets",
-                        help="Ruta al fichero clients_secrets.json")
+    parser.add_argument("client_secrets", help="Ruta al fichero clients_secrets.json")
 
     args = parser.parse_args()
     credentials = get_credentials(args.client_secrets)

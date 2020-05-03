@@ -8,8 +8,8 @@ from email.mime.text import MIMEText
 import notas_oauth
 
 # para configurar desde afuera
-COURSE = os.environ['NOTAS_COURSE_NAME']
-ACCOUNT = os.environ['NOTAS_ACCOUNT']
+COURSE = os.environ["NOTAS_COURSE_NAME"]
+ACCOUNT = os.environ["NOTAS_ACCOUNT"]
 
 template = """
 Este es el link para consultar tus notas:
@@ -25,22 +25,21 @@ notas de {curso}. Si no es así, te pedimos disculpas y por favor ingorá este m
 
 SendmailException = smtplib.SMTPException
 
+
 def sendmail(fromname, toaddr, link):
-	msg = MIMEText(template.format(enlace=link, curso=COURSE),
-	               _charset="utf-8")
-	msg["Subject"] = "Enlace para consultar las notas"
-	msg["From"] = "{} <{}>".format(fromname, ACCOUNT)
-	msg["To"] = toaddr
+    msg = MIMEText(template.format(enlace=link, curso=COURSE), _charset="utf-8")
+    msg["Subject"] = "Enlace para consultar las notas"
+    msg["From"] = "{} <{}>".format(fromname, ACCOUNT)
+    msg["To"] = toaddr
 
-	creds = notas_oauth.get_credenciales()
-	xoauth2_tok = "user={}\1" "auth=Bearer {}\1\1".format(
-	    ACCOUNT, creds.access_token).encode("utf-8")
-	server = smtplib.SMTP('smtp.gmail.com', 587)
-	server.ehlo()
-	server.starttls()
-	server.ehlo()
-	server.docmd("AUTH", "XOAUTH2 " +
-	             base64.b64encode(xoauth2_tok).decode("utf-8"))
-	server.sendmail(ACCOUNT, toaddr, msg.as_string())
-	server.close()
-
+    creds = notas_oauth.get_credenciales()
+    xoauth2_tok = "user={}\1" "auth=Bearer {}\1\1".format(
+        ACCOUNT, creds.access_token
+    ).encode("utf-8")
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.ehlo()
+    server.starttls()
+    server.ehlo()
+    server.docmd("AUTH", "XOAUTH2 " + base64.b64encode(xoauth2_tok).decode("utf-8"))
+    server.sendmail(ACCOUNT, toaddr, msg.as_string())
+    server.close()
