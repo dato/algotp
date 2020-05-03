@@ -13,8 +13,8 @@ from wtforms import fields
 from wtforms import validators
 from wtforms.fields import html5
 
-import notas
-import sendmail
+from . import notas
+from . import sendmail
 
 app = flask.Flask(__name__)
 app.secret_key = os.environ["NOTAS_SECRET"]

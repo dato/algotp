@@ -3,7 +3,7 @@
 import os
 import gspread
 
-import notas_oauth
+from . import notas_oauth
 
 # Constantes
 COL_EMAIL = "Email"
