@@ -22,6 +22,7 @@ app.config.title = os.environ["NOTAS_COURSE_NAME"] + " - Consulta de Notas"
 
 assert app.secret_key
 signer = itsdangerous.URLSafeSerializer(app.secret_key)
+planilla = notas.Planilla()
 
 
 class Formulario(flask_wtf.FlaskForm):
@@ -51,7 +52,7 @@ def index():
         padron = norm_field(form.padron)
         email = norm_field(form.email).strip()
 
-        if not notas.verificar(padron, email):
+        if not planilla.verificar(padron, email):
             flask.flash("La dirección de mail no está asociada a ese padrón", "danger")
         else:
             try:
@@ -83,7 +84,7 @@ def validate(value):
 @use_args({"clave": wfields.Str(required=True, validate=validate)})
 def consultar(args):
     try:
-        notas_alumno = notas.notas(signer.loads(args["clave"]))
+        notas_alumno = planilla.notas(signer.loads(args["clave"]))
     except IndexError as e:
         return flask.render_template("error.html", message=str(e))
     else:

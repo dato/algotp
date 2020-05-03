@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
-
+import itertools
 import os
-import gspread
 
 from . import notas_oauth
+
+from algotp import sheets, planilla
 
 # Constantes
 COL_EMAIL = "Email"
@@ -16,46 +16,34 @@ SHEET_ALUMNOS = "DatosAlumnos"
 SPREADSHEET_KEY = os.environ["NOTAS_SPREADSHEET_KEY"]
 
 
-def get_sheet(worksheet_name):
-    """Devuelve un objeto gspread.Worksheet.
+class Planilla(sheets.PullDB, planilla.Mixin):
+    def __init__(self):
+        creds = notas_oauth.get_credenciales()
+        config = sheets.Config(SPREADSHEET_KEY, creds, [SHEET_NOTAS, SHEET_ALUMNOS])
+        super(Planilla, self).__init__(config)
 
-    Utiliza la constante global SPREADSHEET_KEY.
-    """
-    client = gspread.authorize(notas_oauth.get_credenciales())
-    spreadsheet = client.open_by_key(SPREADSHEET_KEY)
-    return spreadsheet.worksheet(worksheet_name)
+    def verificar(self, padron, email):
+        """Verifica que hay un alumno con el padrón y e-mail indicados.
+        """
+        try:
+            alu = self.alu_map[padron]
+        except KeyError:
+            return False
+        else:
+            return email.lower() == alu.correo.lower()
 
+    def notas(self, padron):
+        notas = self.notas_raw
+        headers = notas[0]
+        idx_padron = headers.index(COL_PADRON)
 
-def verificar(padron_web, email_web):
-    """Verifica que hay un alumno con el padrón y e-mail indicados.
-    """
-    alumnos = get_sheet(SHEET_ALUMNOS)
+        for alumno in itertools.islice(notas, 1, None):
+            if padron.lower() == str(alumno[idx_padron]).lower():
+                return zip(headers, alumno)
 
-    for alumno in alumnos.get_all_records():
-        email = alumno.get(COL_EMAIL, "").strip()
-        padron = str(alumno.get(COL_PADRON, ""))
-
-        if not email or not padron:
-            continue
-
-        if padron.lower() == padron_web.lower() and email.lower() == email_web.lower():
-            return True
-
-    return False
-
-
-def notas(padron):
-    notas = get_sheet(SHEET_NOTAS)
-    filas = notas.get_all_values()
-    headers = filas.pop(0)
-    idx_padron = headers.index(COL_PADRON)
-
-    for alumno in filas:
-        if padron.lower() == alumno[idx_padron].lower():
-            return zip(headers, alumno)
-
-    raise IndexError("Padrón {} no encontrado".format(padron))
+        raise IndexError(f"Padrón {padron} no encontrado")
 
 
 if __name__ == "__main__":
-    print(verificar("942039", "aaa"))
+    planilla = Planilla()
+    print(planilla.verificar("942039", "aaa"))
